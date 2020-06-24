@@ -1,100 +1,23 @@
+/* eslint-disable vue/no-use-v-if-with-v-for */
+/* eslint-disable vue/no-use-v-if-with-v-for */
 <template>
   <div class="cinema_body">
     <ul>
-      <li>
+      <li v-for="item in cinemasList" :key="item.id">
         <div>
-          <span>大地影院(澳东世纪店)</span>
+          <span>{{item.nm}}</span>
           <span class="q">
-            <span class="price">22.9</span> 元起
+            <span class="price">{{item.id}}</span> 元起
           </span>
         </div>
         <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
+          <span>{{item.addr}}</span>
+          <span>{{item.distance}}</span>
         </div>
         <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
+          <i v-for="(num,key) in item.tag" :key="key">
+            <div v-if="num===1" :class="key | formatClss">{{key | formatCard}}</div>
+          </i>
         </div>
       </li>
     </ul>
@@ -104,10 +27,48 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      cinemasList: []
+    };
   },
-  created() {},
-  mounted() {}
+  mounted() {
+    this.axios.get("/api/cinemaList?cityId=10").then(res => {
+      let msg = res.data.msg;
+      if (msg == "ok") {
+        this.cinemasList = res.data.data.cinemas;
+      }
+    });
+  },
+  filters: {
+    formatCard(key) {
+      let card = [
+        { key: "allowRefund", value: "改签" },
+        { key: "endorse", value: "退" },
+        { key: "sell", value: "折扣卡" },
+        { key: "snack", value: "小吃" }
+      ];
+      for (let i = 0; i < card.length; i++) {
+        if (card[i].key === key) {
+          return card[i].value;
+        }
+      }
+      return;
+    },
+    formatClss(key) {
+      let card = [
+        { key: "allowRefund", value: "bl" },
+        { key: "endorse", value: "bl" },
+        { key: "sell", value: "or" },
+        { key: "snack", value: "or" }
+      ];
+      for (let i = 0; i < card.length; i++) {
+        if (card[i].key === key) {
+          return card[i].value;
+        }
+      }
+      return;
+    }
+  }
 };
 </script>
 <style scoped>
@@ -152,11 +113,11 @@ export default {
   font-size: 13px;
   margin-right: 5px;
 }
-.cinema_body .card div.or {
+.cinema_body .card i div.or {
   color: #f90;
   border: 1px solid #f90;
 }
-.cinema_body .card div.bl {
+.cinema_body .card i div.bl {
   color: #589daf;
   border: 1px solid #589daf;
 }

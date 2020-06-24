@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+i{
+  font-style: normal;
+}
 ul,
 li {
   list-style: none;
