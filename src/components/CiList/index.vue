@@ -39,6 +39,8 @@ export default {
       }
     });
   },
+
+  
   filters: {
     formatCard(key) {
       let card = [
